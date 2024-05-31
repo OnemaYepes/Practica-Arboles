@@ -70,7 +70,8 @@ class Binarytree:
 
 
 def printTree(Node, prefix="", is_left=True):
-    if not Node:
+    if not Node.data:
+        print("Arbol vacio")
         return
 
     if Node.rightchild:
@@ -80,24 +81,6 @@ def printTree(Node, prefix="", is_left=True):
 
     if Node.leftchild:
         printTree(Node.leftchild, prefix + ("     " if is_left else "│   "), True)
-
-
-def level_order(root_node):
-    if not root_node:
-        return "Árbol Vacío"
-    else:
-        custom_queue = Queue()
-        custom_queue.enqueue(root_node)
-
-        while not custom_queue.is_empty():
-            temp_root = custom_queue.dequeue()
-            print(temp_root.value.data)
-
-            if temp_root.value.leftchild is not None:
-                custom_queue.enqueue(temp_root.value.leftchild)
-
-            if temp_root.value.rightchild is not None:
-                custom_queue.enqueue(temp_root.value.rightchild)
 
 
 class Paciente:
@@ -208,7 +191,6 @@ def atender_paciente(root):
               if temp_root.rightchild:
                   cola.enqueue(temp_root.rightchild)
 
-
   adjust_heap(root)
 
   return paciente_atendido
@@ -287,7 +269,11 @@ def eliminar_paciente_por_nombre(root, nombre):
     return None
 
   if root.data.nombre == nombre:
-    return eliminar_nodo(root)
+    if not root.leftchild and not root.rightchild:
+      paciente_eliminado = root.data
+      root.data = None
+      return paciente_eliminado
+
 
   cola = Queue()
   cola.enqueue(root)
@@ -317,7 +303,7 @@ def eliminar_paciente_por_nombre(root, nombre):
     return None
 
   if ultimo_nodo:
-    nodo_a_eliminar.data = ultimo_nodo.data
+    nodo_a_eliminar.data, ultimo_nodo.data = ultimo_nodo.data, nodo_a_eliminar.data
     if ultimo_nodo_padre.leftchild == ultimo_nodo:
       ultimo_nodo_padre.leftchild = None
     elif ultimo_nodo_padre.rightchild == ultimo_nodo:
@@ -326,37 +312,6 @@ def eliminar_paciente_por_nombre(root, nombre):
   adjust_heap(root)
   return nodo_a_eliminar
 
-def eliminar_nodo(root):
-  if not root.leftchild and not root.rightchild:
-    root.data = None
-    return root
-
-  ultimo_nodo = None
-  ultimo_nodo_padre = None
-  cola = Queue()
-  cola.enqueue(root)
-
-  while not cola.is_empty():
-    temp_root = cola.dequeue().value
-
-    if temp_root.leftchild:
-      cola.enqueue(temp_root.leftchild)
-      ultimo_nodo_padre = temp_root
-      ultimo_nodo = temp_root.leftchild
-
-    if temp_root.rightchild:
-      cola.enqueue(temp_root.rightchild)
-      ultimo_nodo_padre = temp_root
-      ultimo_nodo = temp_root.rightchild
-
-  root.data = ultimo_nodo.data
-  if ultimo_nodo_padre.leftchild == ultimo_nodo:
-    ultimo_nodo_padre.leftchild = None
-  elif ultimo_nodo_padre.rightchild == ultimo_nodo:
-    ultimo_nodo_padre.rightchild = None
-
-  adjust_heap(root)
-  return root
 
 arbol_paciente = Binarytree(None)
 
